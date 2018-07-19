@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "",
+    password: "b1141994",
     database: "bamazon"
 });
 
@@ -42,19 +42,24 @@ function customerBuy() {
                 message: "How many would you like to purchase?"
             }
         ]).then(function (answer) {
-            for (var i = 0; i < res.length; i++) {
-                if (res[i].item_id == answer.item) {
-                    product = res[i];
+            if (Number.isInteger(parseInt(answer.item)) && Number.isInteger(parseInt(answer.quantity)) && parseInt(answer.item) <= res.length) {
+                for (var i = 0; i < res.length; i++) {
+                    if (res[i].item_id == answer.item) {
+                        product = res[i];
+                    }
                 }
-            }
-            cost = parseFloat(product.price) * parseFloat(answer.quantity)
-            remainingQuantity = product.stock_quantity - parseInt(answer.quantity);
-            if (remainingQuantity < 0) {
-                console.log("Sorry, there is an insufficient quantity to place the order")
-                end();
+                cost = parseFloat(product.price) * parseFloat(answer.quantity)
+                remainingQuantity = product.stock_quantity - parseInt(answer.quantity);
+                if (remainingQuantity < 0) {
+                    console.log("Sorry, there is an insufficient quantity to place the order")
+                    end();
+                } else {
+                    updateQuantity();
+                    console.log("Total cost is: $" + cost);
+                    end();
+                }
             } else {
-                updateQuantity();
-                console.log("Total cost is: $" + cost);
+                console.log("Invalid Input!")
                 end();
             }
         });
